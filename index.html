@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Arcade - Neo Brutalism</title>
+    <link rel="stylesheet" href="style.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;900&display=swap" rel="stylesheet" />
+</head>
+
+<body>
+    <div id="menu-view" class="view active">
+        <div class="menu-container">
+            <h1 class="main-title">SELECT YOUR GAME</h1>
+            <div class="game-cards">
+                <button id="btn-pacman" class="game-card">
+                    <div class="card-icon">ᗧ···ᗣ</div>
+                    <h2>PAC-MAN</h2>
+                    <p>Classic maze runner</p>
+                </button>
+                <button id="btn-battleship" class="game-card">
+                    <div class="card-icon">🚢💥</div>
+                    <h2>BATTLESHIP</h2>
+                    <p>Naval combat strategy</p>
+                </button>
+            </div>
+        </div>
+        <div class="signature brutal-label">Harish</div>
+    </div>
+
+    <div id="pacman-view" class="view hidden">
+        <button class="back-btn brutal-btn" data-target="menu-view">BACK TO MENU</button>
+        <div class="wrapper pacman-wrapper">
+            <header class="header">
+                <h1 class="title">PAC-MAN</h1>
+                <div class="scoreboard">
+                    <div class="score-label brutal-label">
+                        SCORE: <span id="score">0</span>
+                    </div>
+                    <div class="lives-label brutal-label">
+                        LIVES: <span id="lives">3</span>
+                    </div>
+                    <button id="restartBtn" class="restart-btn brutal-btn">RESTART 🔁</button>
+                </div>
+            </header>
+
+            <main class="game-container">
+                <canvas id="gameCanvas" width="560" height="620"></canvas>
+                <p class="hint brutal-label">
+                    USE ARROWS OR WASD TO MOVE. AVOID GHOSTS!
+                </p>
+            </main>
+        </div>
+    </div>
+
+    <div id="battleship-view" class="view hidden">
+        <button class="back-btn brutal-btn" data-target="menu-view">BACK TO MENU</button>
+        <div class="wrapper bs-wrapper">
+            <div id="levelScreen" class="level-screen">
+                <div class="level-header">
+                    <h1 class="title">BATTLESHIP</h1>
+                    <button type="button" id="helpBtnLevel" class="help-btn brutal-btn"
+                        aria-label="How to play">?</button>
+                </div>
+                <p class="brutal-subtitle">CHOOSE DIFFICULTY</p>
+                <div class="level-buttons">
+                    <button type="button" data-level="easy" class="level-btn brutal-btn">
+                        <span class="level-name">EASY</span>
+                        <span class="level-desc">Random fire · no hunt</span>
+                    </button>
+                    <button type="button" data-level="medium" class="level-btn brutal-btn">
+                        <span class="level-name">MEDIUM</span>
+                        <span class="level-desc">Hunt after hit</span>
+                    </button>
+                    <button type="button" data-level="hard" class="level-btn brutal-btn">
+                        <span class="level-name">HARD</span>
+                        <span class="level-desc">Hunt + target adjacency</span>
+                    </button>
+                </div>
+            </div>
+
+            <div id="gameScreen" class="game-screen hidden">
+                <header class="header">
+                    <h1 class="title">BATTLESHIP</h1>
+                    <button type="button" id="helpBtnGame" class="help-btn brutal-btn"
+                        aria-label="How to play">?</button>
+                    <span class="level-badge brutal-label" id="levelBadge">EASY</span>
+                    <div class="header-actions">
+                        <span id="hud" class="hud brutal-label">PLACE YOUR FLEET</span>
+                        <button type="button" id="changeLevelBtn" class="btn btn-ghost brutal-btn">CHANGE LEVEL</button>
+                        <button type="button" id="newGameBtn" class="btn brutal-btn">NEW GAME</button>
+                    </div>
+                </header>
+
+                <div id="placementBar" class="placement-bar brutal-panel">
+                    <div id="shipTray" class="ship-tray" aria-label="Ship tray"></div>
+                    <div class="placement-controls">
+                        <button type="button" id="rotateBtn" class="btn btn-rotate brutal-btn">ROTATE</button>
+                        <button type="button" id="readyBtn" class="btn brutal-btn" disabled>READY</button>
+                    </div>
+                </div>
+
+                <main class="boards">
+                    <section class="board-panel brutal-panel">
+                        <h2 class="board-title">YOUR FLEET</h2>
+                        <div id="playerBoard" class="board" role="grid" aria-label="Your fleet board"></div>
+                    </section>
+                    <section class="board-panel brutal-panel">
+                        <h2 class="board-title">ENEMY WATERS</h2>
+                        <div id="enemyBoard" class="board" role="grid" aria-label="Enemy waters board"></div>
+                    </section>
+                </main>
+
+                <div id="resultOverlay" class="result-overlay hidden">
+                    <div class="result-box brutal-panel">
+                        <h2 id="resultTitle"></h2>
+                        <p id="resultMsg"></p>
+                        <div class="result-actions">
+                            <button type="button" id="playAgainBtn" class="btn btn-large brutal-btn">PLAY AGAIN</button>
+                            <button type="button" id="changeLevelFromResultBtn" class="btn btn-ghost brutal-btn">CHANGE
+                                LEVEL</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="helpOverlay" class="help-overlay hidden" aria-hidden="true">
+            <div class="help-modal brutal-panel" role="dialog" aria-modal="true" aria-labelledby="helpTitle">
+                <div class="help-header">
+                    <h2 id="helpTitle">HOW TO PLAY</h2>
+                    <button type="button" id="helpClose" class="help-close brutal-btn"
+                        aria-label="Close">&times;</button>
+                </div>
+                <div class="help-body">
+                    <p>Classic Battleship on dual 10×10 grids. Place your fleet, then take turns firing one shot at a
+                        time (no Salvo).</p>
+                    <ul>
+                        <li><strong>Fleet:</strong> Carrier (5), Battleship (4), Cruiser (3), Submarine (3), Destroyer
+                            (2). Ships may touch.</li>
+                        <li><strong>Placement:</strong> Select a ship from the tray, press Rotate or R to turn, then
+                            click your board. Ready starts combat when all ships are placed.</li>
+                        <li><strong>Combat:</strong> You fire first. Click an enemy cell. Misses mark water; hits mark
+                            ships. Sunk ships are announced and revealed on the enemy board.</li>
+                        <li><strong>Win:</strong> Sink the entire enemy fleet. <strong>Lose:</strong> your fleet is
+                            sunk.</li>
+                        <li><strong>AI:</strong> Easy fires at random. Medium hunts orthogonally after a hit. Hard
+                            continues along aligned hits and uses checkerboard hunting.</li>
+                        <li><strong>New Game</strong> restarts placement on the same level. <strong>Change
+                                Level</strong> returns to the difficulty screen.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
